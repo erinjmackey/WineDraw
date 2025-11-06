@@ -10,19 +10,23 @@ End Code
               <h4>@ViewData("Title")</h4>
             </div>
             <div class="card-body">
-            <ul>
-                <li>Each individual participant provides a $25 entry. Couples must provide $50 for both of their names to be entered in the draw.</li>
-                <li>Once we receive all the money, we'll split everyone into teams. As long as someone on your team has not been drawn, you still have a chance at an equal share of the wine.</li>
-                <li>About a week before the draw, we'll start drawing names from the hat.</li>
-                <li>Prior to the party, approximately 50% of the names will be drawn. The remaining names will be drawn throughout the evening of the party. The last name will be drawn around 11:00 PM.</li>
-                <li><strong>The last name in the drum represents the winning team. As long as one of your team mates are in the running, so are you.</strong></li>
-                <li>
-                    The winning team divides the wine between themselves.
-                    <ul>
-                        <li><strong>To avoid confusion when selecting the wines, only the winning team will be involved in the selection of wines.</strong></li>
-                    </ul>
-                </li>
-            </ul>
+            <section aria-labelledby="entry">
+				<h3 id="entry">Entry</h3>
+				<p><span class="pill">$25</span> - Each participant chips in a <span class="highlight">$25 entry fee</span> and will be <strong>randomly assigned</strong> to a team.</p>
+			</section>
+
+
+			<section aria-labelledby="rules" style="margin-top:12px">
+				<h3 id="rules">The Game</h3>
+				<ul>
+					<li>Your fate is tied to your teammates - as long as <em>someone</em> from your team hasn’t been drawn, you’re still in the running for an equal share of the wine.</li>
+					<li>A week before the party we start pulling names from the hat - <strong>50% of the names</strong> will be drawn before the big night.</li>
+					<li>The remaining names will be drawn live throughout the evening, with the <strong>final name</strong> revealed around <strong>10:00 PM</strong>.</li>
+					<li>The last name left in the drum represents the <strong>winning team</strong> - if one of your teammates is still standing, so are you.</li>
+					<li>The winning team splits the wine amongst themselves.</li>
+					<li>To keep things smooth (and drama-free), <strong>only the winners</strong> will pick the bottles.</li>
+				</ul>
+			</section>
             </div>
           </div>
         </div>
