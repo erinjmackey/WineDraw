@@ -18,7 +18,7 @@ End Code
     </script>
     <style>
 		li.list-group-item.player-eliminated{
-			background-color: #a94442;
+			background-color: #600;
 			color: white;
 		}
 		.team-eliminated{
@@ -26,7 +26,7 @@ End Code
 			background-repeat: no-repeat;
 			background-size: contain;
 			background-position: right;
-			background-color: #a94442;
+			background-color: #600;
 			color: white;
 		}
         body {
