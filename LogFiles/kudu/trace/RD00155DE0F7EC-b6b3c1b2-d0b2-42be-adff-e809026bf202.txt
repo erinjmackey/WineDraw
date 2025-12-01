@@ -1,1 +1,0 @@
-2021-12-03T22:45:53  Startup Request, url: /api/vfs/site/wwwroot/?_=1638571530628, method: GET, type: request, pid: 22864,2,8, SCM_SKIP_SSL_VALIDATION: 0, ScmType: None
