@@ -1,5 +1,6 @@
 ---
 layout: default
+permalink: /recent/
 ---
 
 <div class="container body-content">

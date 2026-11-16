@@ -1,5 +1,6 @@
 ---
 layout: default
+permalink: /winners/
 ---
 
 <div class="container body-content">

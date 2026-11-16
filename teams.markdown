@@ -1,5 +1,6 @@
 ---
 layout: default
+permalink: /teams/
 ---
 
 <div class="container body-content">
