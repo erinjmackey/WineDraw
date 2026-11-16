@@ -4,6 +4,8 @@ title: Mackey Wine Draw
 layout: default
 description: Like Competitions? Like Wine? Like supporting a Good Cause? Then this is for you! Come join us at Sirocco Golf Course for a Holiday party and wine draw.
 
+redirect_from:
+  - /about/
 ---
 
 <div class="container body-content">
@@ -14,12 +16,12 @@ description: Like Competitions? Like Wine? Like supporting a Good Cause? Then th
 					<div class="card-body">
 						<section aria-labelledby="entry">
 							<p>Like Competitions? Like Wine? Like supporting a Good Cause? Then this is for you! Come join us at Sirocco Golf Course for a Holiday party and wine draw.</p>
-							<img src="images/winegambling.png" />
+							 <img loading="lazy" class="w-100" src="images/winegambling.png" />
 							<p>How it works:</p>
 							<p>Each participant will be put on a team. Every day between {{ site.data.event.party_date | date: '%s' | minus: 604800 | date: '%b %-d' }} and {{ site.data.event.party_date | date: '%s' | minus: 86400 | date: '%-d' }}, we will draw names to eliminate participants. If your team still has participants, you are still in the draw. On <strong>{{ site.data.event.party_date | date: '%b %-d' }}</strong>, we will draw the remaining names in person at the party, until one name remains. That person's team wins all the wine.</p>
-							<p>Entry fees are ${{ site.data.event.entry_fee }} per person. Approximately 25% of the entry goes to the food bank and 75% goes toward purchasing wine.</p>
+							<p>Entry fees are <strong>${{ site.data.event.entry_fee }} per person</strong>. Approximately 25% of the entry goes to the food bank and 75% goes toward purchasing wine.</p>
 							<p>We will have a food hamper and cash box at the wine draw if you want to provide the Food Bank with more support. In {{ site.data.event.party_date | date: "%Y" | minus: 1 }} we raised <strong>over ${{ site.data.event.food_bank_donation }}</strong> in cash and food!</p>
-							<p>If you intend to enter the draw or attend the party, please register at the link below <strong>before {{ site.data.event.party_date | date: '%s' | minus: 691200 | date: '%b %-d' }}</strong></p>
+							<p>If you intend to enter the draw or attend the party, please register at the link below <strong>before {{ site.data.event.entry_deadline | date: '%b %-d' }}</strong></p>
 							<a class="btn btn-primary m-4" href="https://forms.cloud.microsoft/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAN__sSQ_vxUMVBFSEI0NVJRSFRRVEswRERLUkVHRTRWWi4u" target="_blank">Register Here!</a>
 						</section>
 					</div>
@@ -97,7 +99,7 @@ description: Like Competitions? Like Wine? Like supporting a Good Cause? Then th
 					<div class="card-header" style="font-size: xx-large;">Sirocco Menu</div>
 					<div class="card-body">
 						<p>Gluten free and vegan options will be available.</p>
-						<img src="images/siroccomenu.png" class="card-img-top" alt="Sirocco Menu" style="width: 100%;">
+						 <img loading="lazy" src="images/siroccomenu.png" class="card-img-top" alt="Sirocco Menu" style="width: 100%;">
 						<br>
 						<a class="h3 card-title stretched-link" href="images/siroccomenu.pdf" target="_blank" style="color: darkred;text-decoration: underline;">Download Menu</a>
 					</div>

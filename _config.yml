@@ -33,6 +33,7 @@ og_locale: en_CA
 theme: minima
 plugins:
   - jekyll-feed
+  - jekyll-redirect-from
 
 google_apps_script_id: AKfycbxfl5j6yGoc76VbZJFx8iHOV4OW78TL8hd3P9Wmo8QOeg92k1-XoTeiptOhb-O0FquTPg
 
