@@ -35,7 +35,7 @@ plugins:
   - jekyll-feed
   - jekyll-redirect-from
 
-google_apps_script_id: AKfycbzGvZsNDLsaC5GbdEYz460-q-sIHz9mOzgtVVeY0-atl3Sn9nAus2AG77CN32wHYvKwmw
+google_apps_script_id: AKfycbwx_mxmki5VVu5lbNC_Ar-27dQSWapSlSrakuUScvDRvXlfftflQoAo4xNGAvq8LEg6Yg
 
 # Exclude from processing.
 # The following items will not be processed, by default.
