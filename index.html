@@ -1,0 +1,206 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Mackey Christmas Wine Draw</title>
+  <meta name="description" content="Follow the teams, daily eliminations, and last name standing in The Mackey Christmas Wine Draw." />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+
+<body>
+  <!-- Shown automatically only when API_URL in config.js is empty -->
+  <div id="demo-banner" class="demo-banner no-print" hidden>
+    <div class="demo-banner-inner">
+      <span class="demo-badge">Demo Mode</span>
+      <span>
+        Viewing sample holiday teams. Try drawing names in the
+        <a href="./admin.html">Admin Draw Console</a>, or connect your Google Sheet in
+        <code>config.js</code>.
+      </span>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="hero-frame">
+      <div class="hero-ornament" id="hero-ornament">
+        <span class="hero-season" id="hero-season">Holiday Vintage</span>
+      </div>
+      <h1 class="hero-title" id="hero-title">The Mackey Christmas Wine Draw</h1>
+      <p class="hero-subtitle" id="hero-subtitle">
+        Annual Holiday Cellar Elimination &mdash; Last name standing takes home the wine
+      </p>
+      <nav class="hero-nav no-print" aria-label="Primary">
+        <button type="button" class="hero-pill-link" id="open-party-nav">
+          Party Info
+        </button>
+        <button type="button" class="hero-pill-link" id="open-history-nav">
+          Draw History
+        </button>
+        <button type="button" class="hero-pill-link" id="open-winners-nav">
+          Previous Winners
+        </button>
+        <button type="button" class="hero-pill-link" id="refresh-btn">
+          Refresh Standings
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Grand Winner Banner (renders automatically when 1 player remains) -->
+    <div id="winner-slot"></div>
+
+    <!-- Cellar Tally Summary -->
+    <section class="stats-grid" id="stats-slot" aria-label="Draw summary"></section>
+
+    <!-- Latest Elimination Round Spotlight -->
+    <div id="latest-draw-slot"></div>
+
+    <!-- Search, Filter & Sort Controls -->
+    <section class="controls-bar no-print" aria-label="Search and filter teams">
+      <div class="search-wrap">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7.5"></circle>
+          <path d="m20 20-3.8-3.8"></path>
+        </svg>
+        <label for="search-input" class="sr-only">Find a player or team</label>
+        <input type="search" id="search-input" class="search-input" placeholder="Find a player or team…" autocomplete="off" />
+        <button type="button" id="search-clear" class="search-clear" aria-label="Clear search" hidden>
+          &times;
+        </button>
+      </div>
+
+      <div class="controls-right">
+        <div class="filter-group" role="group" aria-label="Filter teams by status">
+          <button type="button" class="filter-btn" data-filter="all" aria-pressed="true">
+            All Teams
+          </button>
+          <button type="button" class="filter-btn" data-filter="active" aria-pressed="false">
+            Still In
+          </button>
+          <button type="button" class="filter-btn" data-filter="eliminated" aria-pressed="false">
+            Eliminated
+          </button>
+        </div>
+
+        <label for="sort-select" class="sr-only">Sort teams</label>
+        <select id="sort-select" class="sort-select">
+          <option value="active-first">Active Teams First</option>
+          <option value="most-remaining">Most Players Left</option>
+          <option value="alpha">Team Name (A–Z)</option>
+          <option value="original">Original Order</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Teams & Players Board -->
+    <section id="teams-slot" aria-label="Teams and players"></section>
+  </main>
+
+  <footer class="site-footer no-print">
+    <div class="footer-inner">
+      <div>
+        <strong id="footer-event-name">The Mackey Christmas Wine Draw</strong>
+        <span id="last-updated" style="margin-left: 0.75rem; color: var(--ink-muted);"></span>
+      </div>
+      <div class="footer-links">
+        <a href="./projector.html">Projector View</a>
+        <a href="./admin.html">Admin Draw Console</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Draw History Modal -->
+  <div id="history-modal" class="modal-backdrop no-print" role="dialog" aria-modal="true" aria-labelledby="history-modal-title" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title" id="history-modal-title">Draw History</h2>
+        <button type="button" id="history-modal-close" class="modal-close" aria-label="Close draw history">
+          &times;
+        </button>
+      </div>
+      <div id="history-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Previous Winners Modal -->
+  <div id="winners-modal" class="modal-backdrop no-print" role="dialog" aria-modal="true" aria-labelledby="winners-modal-title" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title" id="winners-modal-title">Previous Winners</h2>
+        <button type="button" id="winners-modal-close" class="modal-close" aria-label="Close previous winners">
+          &times;
+        </button>
+      </div>
+      <div id="winners-modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Party Info Modal -->
+  <div id="party-modal" class="modal-backdrop no-print" role="dialog" aria-modal="true" aria-labelledby="party-modal-title" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 class="modal-title" id="party-modal-title">2026 Party &amp; Draw Info</h2>
+        <button type="button" id="party-modal-close" class="modal-close" aria-label="Close party info">
+          &times;
+        </button>
+      </div>
+      <div class="party-modal-body">
+        <div class="party-callout">
+          <div class="party-callout-date">Saturday, November 28, 2026 &middot; 6:00 PM</div>
+          <div class="party-callout-venue">Sirocco Golf Club</div>
+          <div class="party-callout-address">210178 64 St W, Foothills County, AB</div>
+        </div>
+
+        <div class="party-section">
+          <h3>Evening Schedule</h3>
+          <ul class="party-schedule">
+            <li><span>6:00 PM</span> Party Starts</li>
+            <li><span>7:00 PM</span> Wine Draw Begins</li>
+            <li><span>9:00 PM</span> Kitchen Closes</li>
+            <li><span>11:00 PM</span> Winner Announced</li>
+            <li><span>1:00 AM</span> Bar Closes</li>
+          </ul>
+        </div>
+
+        <div class="party-section">
+          <h3>How the Draw Works</h3>
+          <ul>
+            <li>Each participant ($30 entry) is randomly placed on a team.</li>
+            <li>Daily eliminations run Nov 21&ndash;27 (~50% drawn before party night), with the remaining names drawn live at the party until one name remains.</li>
+            <li>As long as someone on your team is still in, you're still in &mdash; the winning team splits all the wine equally.</li>
+          </ul>
+        </div>
+
+        <div class="party-section">
+          <h3>Calgary Food Bank Fundraiser</h3>
+          <p>
+            About 25% of every entry goes to The Calgary Food Bank and 75% buys wine (over
+            $2,500 raised in 2025). A non-perishable food hamper and cash donation box will be at
+            the party, and the runner-up receives the donation tax receipt.
+          </p>
+        </div>
+
+        <div class="party-modal-actions">
+          <a href="https://www.calgaryfoodbank.com/donate/" class="party-btn party-btn--primary" target="_blank" rel="noopener">
+            Donate to Calgary Food Bank
+          </a>
+          <a href="https://www.siroccogolfclub.com/" class="party-btn" target="_blank" rel="noopener">
+            Sirocco Golf Club
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script type="module" src="./js/board.js"></script>
+</body>
+
+</html>

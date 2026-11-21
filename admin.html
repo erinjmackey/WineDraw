@@ -1,0 +1,236 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Console — The Mackey Christmas Wine Draw</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+
+<body>
+  <div id="demo-banner" class="demo-banner no-print" hidden>
+    <div class="demo-banner-inner">
+      <span class="demo-badge">Demo Mode</span>
+      <span>
+        Changes are saved locally in your browser so you can test draws safely before linking
+        Google Sheets.
+      </span>
+    </div>
+  </div>
+
+  <header class="hero hero--compact no-print">
+    <div class="hero-frame">
+      <div class="hero-ornament" id="hero-ornament">
+        <span class="hero-season">Drawmaster Console</span>
+      </div>
+      <h1 class="hero-title" id="hero-title">The Mackey Christmas Wine Draw</h1>
+      <nav class="hero-nav" aria-label="Admin navigation">
+        <a href="./index.html" class="hero-pill-link">&larr; View Public Board</a>
+        <a href="./projector.html" class="hero-pill-link">Projector View</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container admin-page-content no-print">
+    <!-- Passcode Gate -->
+    <section id="auth-section" class="panel panel--accent auth-card">
+      <h2 class="panel-title">Drawmaster Sign-In</h2>
+      <p class="panel-desc">
+        Enter the admin passcode to draw daily eliminations and update the board.
+      </p>
+
+      <div id="auth-error" class="alert alert-error" hidden></div>
+
+      <form id="auth-form">
+        <div class="field-group">
+          <label for="passcode-input" class="field-label">Admin Passcode</label>
+          <input type="password" id="passcode-input" class="text-input" placeholder="Enter passcode" autocomplete="current-password" required />
+        </div>
+        <button type="submit" id="auth-submit-btn" class="btn btn-primary btn-lg" style="width: 100%;">
+          Unlock Draw Console
+        </button>
+      </form>
+
+      <div id="demo-quick-unlock-wrap" style="margin-top: 1.15rem; padding-top: 1.05rem; border-top: 1px solid var(--border-subtle);" hidden>
+        <p class="field-help" style="margin: 0 0 0.65rem;">
+          Demo Mode passcode is <strong id="demo-passcode-hint">mackey</strong>.
+        </p>
+        <button type="button" id="demo-quick-unlock-btn" class="btn btn-secondary btn-sm">
+          Enter Demo Console
+        </button>
+      </div>
+    </section>
+
+    <!-- Unlocked Admin Workspace -->
+    <div id="admin-workspace" hidden>
+      <div id="admin-alert" class="alert" hidden></div>
+
+      <div id="admin-winner-slot"></div>
+
+      <!-- Live Stats -->
+      <section class="stats-grid" id="admin-stats" aria-label="Current draw totals"></section>
+
+      <div class="admin-grid">
+        <!-- Left Column: Draw Eliminations + Latest Drawn Names -->
+        <div>
+          <section class="panel panel--accent">
+            <h2 class="panel-title">Draw Names to Eliminate</h2>
+            <p class="panel-desc">
+              Choose how many names to eliminate today. Names are chosen completely at random
+              from all players still in the draw.
+            </p>
+
+            <form id="draw-form">
+              <div class="field-group">
+                <label for="draw-count-input" class="field-label">
+                  Number of Names to Eliminate
+                </label>
+                <div class="stepper-row">
+                  <button type="button" id="draw-decrement" class="stepper-btn" aria-label="Decrease number of names">
+                    &minus;
+                  </button>
+                  <input type="number" id="draw-count-input" class="stepper-input" value="4" min="1" step="1" inputmode="numeric" required />
+                  <button type="button" id="draw-increment" class="stepper-btn" aria-label="Increase number of names">
+                    +
+                  </button>
+                </div>
+                <div class="quick-picks" aria-label="Quick select count">
+                  <button type="button" class="quick-pick-btn" data-quick-pick="1">1</button>
+                  <button type="button" class="quick-pick-btn" data-quick-pick="2">2</button>
+                  <button type="button" class="quick-pick-btn" data-quick-pick="3">3</button>
+                  <button type="button" class="quick-pick-btn" data-quick-pick="5">5</button>
+                  <button type="button" class="quick-pick-btn" data-quick-pick="10">10</button>
+                  <button type="button" class="quick-pick-btn" data-quick-pick="20">20</button>
+                </div>
+                <p class="field-help" id="draw-max-hint"></p>
+              </div>
+
+              <div class="field-group">
+                <label for="draw-date-input" class="field-label">
+                  Draw Timestamp <span style="font-weight: 400; color: var(--ink-muted);">(each timestamp is its own round on the Sheet)</span>
+                </label>
+                <label style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.45rem; font-size: 0.94rem; cursor: pointer;">
+                  <input type="checkbox" id="draw-auto-time" checked />
+                  <span>Use current date &amp; time when drawing</span>
+                </label>
+                <input type="datetime-local" id="draw-date-input" class="text-input" step="60" disabled />
+              </div>
+
+              <button type="submit" id="draw-submit-btn" class="btn btn-primary btn-lg" style="width: 100%;">
+                Draw Names Now
+              </button>
+            </form>
+
+            <!-- Drawn Names Result Box renders here right after a draw -->
+            <div id="draw-result-slot"></div>
+          </section>
+
+          <!-- Safety Controls: Undo, Demo Reset, Connection -->
+          <section class="panel panel--gold">
+            <h2 class="panel-title">Draw Controls &amp; Safety</h2>
+            <p class="panel-desc" id="undo-hint">No draws have been run yet.</p>
+
+            <div class="result-actions" style="margin-bottom: 1.15rem;">
+              <button type="button" id="undo-last-btn" class="btn btn-danger-outline" disabled>
+                Undo Last Draw
+              </button>
+              <a href="./index.html" class="btn btn-secondary">Open Public Board</a>
+              <button type="button" id="lock-admin-btn" class="btn btn-secondary">
+                Lock Console
+              </button>
+            </div>
+
+            <div id="demo-reset-wrap" style="padding-top: 1rem; border-top: 1px solid var(--border-subtle);" hidden>
+              <p class="field-help" style="margin: 0 0 0.65rem;">
+                Testing in Demo Mode? Reset the sample 8 teams back to their starting point:
+              </p>
+              <button type="button" id="demo-reset-btn" class="btn btn-secondary btn-sm">
+                Reset Demo Roster
+              </button>
+            </div>
+          </section>
+
+          <!-- Connection Info & Optional Browser Tester -->
+          <section class="panel">
+            <h2 class="panel-title" style="font-size: 1.38rem;">Google Sheet Connection</h2>
+            <p id="connection-status" class="panel-desc" style="margin-bottom: 0.9rem;"></p>
+            <details>
+              <summary style="cursor: pointer; font-weight: 600; color: var(--claret);">
+                Test an Apps Script Web App URL in this browser
+              </summary>
+              <div style="margin-top: 0.9rem;">
+                <div class="field-group">
+                  <label for="api-url-input" class="field-label">Apps Script Web App URL</label>
+                  <input type="url" id="api-url-input" class="text-input" placeholder="https://script.google.com/macros/s/.../exec" />
+                  <p class="field-help">
+                    Saves only in this browser for testing. For everyone to use your live Sheet,
+                    paste the URL into <code>config.js</code> in GitHub.
+                  </p>
+                </div>
+                <div class="result-actions">
+                  <button type="button" id="api-url-save" class="btn btn-pine btn-sm">
+                    Use This URL
+                  </button>
+                  <button type="button" id="api-url-clear" class="btn btn-secondary btn-sm">
+                    Back to Demo Mode
+                  </button>
+                </div>
+              </div>
+            </details>
+          </section>
+        </div>
+
+        <!-- Right Column: Past Draws History with Copy / Print -->
+        <div>
+          <section class="panel panel--pine">
+            <h2 class="panel-title">Completed Draws</h2>
+            <p class="panel-desc">
+              Every past elimination round is recorded here so you can copy or re-print any
+              day's list.
+            </p>
+            <div id="admin-history-slot"></div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Print-only crisp handout container -->
+  <section id="print-sheet" class="print-only" aria-hidden="true"></section>
+
+  <footer class="site-footer no-print">
+    <div class="footer-inner">
+      <strong id="footer-event-name">The Mackey Christmas Wine Draw</strong>
+      <div class="footer-links">
+        <a href="./index.html">Public Standings Board</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Confirmation Modal -->
+  <div id="confirm-modal" class="modal-backdrop no-print" role="dialog" aria-modal="true" aria-labelledby="confirm-title" hidden>
+    <div class="modal-card" style="max-width: 500px;">
+      <div class="modal-header">
+        <h2 class="modal-title" id="confirm-title">Confirm</h2>
+        <button type="button" id="confirm-close-btn" class="modal-close" aria-label="Cancel">
+          &times;
+        </button>
+      </div>
+      <div id="confirm-body" style="margin-bottom: 1.35rem;"></div>
+      <div class="result-actions" style="justify-content: flex-end;">
+        <button type="button" id="confirm-cancel-btn" class="btn btn-secondary">Cancel</button>
+        <button type="button" id="confirm-ok-btn" class="btn btn-primary">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script type="module" src="./js/admin.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projector Board — The Mackey Christmas Wine Draw</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="./css/styles.css" />
+</head>
+
+<body class="projector-body">
+  <header class="proj-header">
+    <div class="proj-brand">
+      <span class="proj-ornament" id="proj-ornament"></span>
+      <div>
+        <h1 class="proj-title" id="proj-title">The Mackey Christmas Wine Draw</h1>
+        <div class="proj-sub">
+          <span id="proj-updated">Loading standings&hellip;</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proj-tallies" id="proj-tallies" aria-label="Draw summary"></div>
+
+    <div class="proj-controls no-print">
+      <button type="button" id="proj-active-toggle" class="proj-btn" aria-pressed="false">
+        Active Only
+      </button>
+      <button type="button" id="proj-refresh" class="proj-btn" title="Refresh standings (R)">
+        Refresh
+      </button>
+      <button type="button" id="proj-fullscreen" class="proj-btn proj-btn--gold" title="Toggle Fullscreen (F)">
+        Fullscreen
+      </button>
+      <a href="./index.html" class="proj-btn">Board</a>
+    </div>
+  </header>
+
+  <div id="proj-spotlight" class="proj-spotlight" hidden></div>
+
+  <main id="proj-grid" class="proj-grid" aria-label="All teams projector view"></main>
+
+  <script src="./config.js"></script>
+  <script type="module" src="./js/projector.js"></script>
+</body>
+
+</html>
