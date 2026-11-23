@@ -792,7 +792,7 @@ select {
 .player-row--eliminated .player-name {
   color: #4a3b3d;
   font-weight: 500;
-  text-decoration: line-through;
+  text-decoration: none;
   text-decoration-color: #6e5d5f;
   text-decoration-thickness: 1.5px;
 }
@@ -818,8 +818,8 @@ select {
 }
 
 .player-tag--eliminated {
-  color: #6f2d35;
-  background: rgba(110, 26, 42, 0.08);
+  background: #793038;
+  color: white;
 }
 
 /* ==========================================================================
@@ -1526,7 +1526,7 @@ select {
 .party-schedule {
   list-style: none !important;
   padding-left: 0 !important;
-  display: grid;
+  display: list-item;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 0.35rem 0.9rem;
 }
