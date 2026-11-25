@@ -5,6 +5,7 @@
 
 import { fetchBoard, getConfig, isDemoMode } from "./api.js";
 import { escapeHtml, formatDateTime, ICONS, preserveRosterParam } from "./ui-helpers.js";
+import { startSpotlightScroll } from "./projector-scroll.js";
 
 const state = {
   board: null,
@@ -13,6 +14,8 @@ const state = {
 };
 
 const els = {};
+let spotlightKey = null;
+let stopSpotlightScroll = null;
 
 function cacheElements() {
   els.ornament = document.getElementById("proj-ornament");
@@ -63,6 +66,14 @@ function renderTallies(board) {
 
 function renderSpotlight(board) {
   const winner = board.summary.winner;
+  const latest = board.rounds[0];
+  // Keep the existing scrolling position when a refresh returns the same draw.
+  const key = JSON.stringify(winner ? ["winner", winner.name, winner.team] : ["round", latest]);
+  if (key === spotlightKey) return;
+  spotlightKey = key;
+  if (stopSpotlightScroll) stopSpotlightScroll();
+  stopSpotlightScroll = null;
+
   if (winner) {
     els.spotlight.hidden = false;
     els.spotlight.className = "proj-spotlight proj-spotlight--winner";
@@ -73,7 +84,6 @@ function renderSpotlight(board) {
     return;
   }
 
-  const latest = board.rounds[0];
   if (!latest) {
     els.spotlight.hidden = true;
     els.spotlight.innerHTML = "";
@@ -91,17 +101,9 @@ function renderSpotlight(board) {
 
   els.spotlight.innerHTML = `
     <span class="proj-spot-label">Round ${latest.round} Out (${latest.players.length}):</span>
-    <div class="proj-spot-chips">
-      <div class="proj-spot-track">
-        <div class="proj-spot-group">
-          ${chips}
-        </div>
-        <div class="proj-spot-group" aria-hidden="true">
-          ${chips}
-        </div>
-      </div>
-    </div>
+    <div class="proj-spot-chips" role="region" aria-label="Recent draw names" tabindex="0">${chips}</div>
   `;
+  stopSpotlightScroll = startSpotlightScroll(els.spotlight.querySelector(".proj-spot-chips"));
 }
 
 function renderGrid(board) {

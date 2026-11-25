@@ -196,8 +196,75 @@ function buildRoster() {
       assert.deepStrictEqual(m.teamNamesClipped, [], `${size.width}: no team name truncated`);
     }
 
+    // A long recent draw scrolls without restarting on a board refresh.
+    await waitFor("document.querySelector('.proj-spot-chips').scrollLeft > 20", "automatic spotlight scroll");
+    const beforeRefresh = await evaluate(`(() => {
+      window.savedSpotlight = document.querySelector('.proj-spot-chips');
+      return window.savedSpotlight.scrollLeft;
+    })()`);
+    await evaluate("document.querySelector('#proj-refresh').click()");
+    await sleep(600);
+    const afterRefresh = await evaluate(`({
+      sameNode: window.savedSpotlight === document.querySelector('.proj-spot-chips'),
+      position: document.querySelector('.proj-spot-chips').scrollLeft
+    })`);
+    assert.strictEqual(afterRefresh.sameNode, true, "refresh keeps the existing spotlight");
+    assert(afterRefresh.position > beforeRefresh, "refresh does not reset the scrolling position");
+
+    // Reaching the end reverses direction, so the final names are never lost.
+    await evaluate(`(() => {
+      const el = document.querySelector('.proj-spot-chips');
+      el.focus();
+      el.scrollLeft = el.scrollWidth;
+      el.blur();
+    })()`);
+    const end = await evaluate("document.querySelector('.proj-spot-chips').scrollLeft");
+    await sleep(2300);
+    assert((await evaluate("document.querySelector('.proj-spot-chips').scrollLeft")) < end, "scroll reverses after the last name");
+
+    // Reduced-motion preference stops the animation while keeping manual scrolling available.
+    await send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "reduce" }] });
+    await sleep(200);
+    const stationary = await evaluate("document.querySelector('.proj-spot-chips').scrollLeft");
+    await sleep(800);
+    assert.strictEqual(await evaluate("document.querySelector('.proj-spot-chips').scrollLeft"), stationary, "reduced motion stops automatic scrolling");
+    const manual = await evaluate(`(() => {
+      const el = document.querySelector('.proj-spot-chips');
+      el.scrollLeft = 0;
+      el.scrollLeft = 200;
+      return { position: el.scrollLeft, scrollbar: getComputedStyle(el).scrollbarWidth };
+    })()`);
+    assert(manual.position > 0, "reduced-motion users can scroll manually");
+    assert.notStrictEqual(manual.scrollbar, "none", "reduced-motion users can see a scrollbar");
+    await send("Emulation.setEmulatedMedia", { features: [] });
+
+    // The same scrolling behavior applies on a narrow display.
+    await send("Emulation.setDeviceMetricsOverride", { width: 390, height: 844, deviceScaleFactor: 1, mobile: false });
+    await evaluate("document.querySelector('.proj-spot-chips').scrollLeft = 0");
+    await sleep(1200);
+    const narrow = await evaluate(`(() => {
+      const el = document.querySelector('.proj-spot-chips');
+      return { position: el.scrollLeft, overflowing: el.scrollWidth > el.clientWidth,
+        pageOverflow: document.documentElement.scrollWidth - innerWidth,
+        wrap: getComputedStyle(el).flexWrap };
+    })()`);
+    assert(narrow.overflowing && narrow.position > 0, "narrow spotlight scrolls");
+    assert.strictEqual(narrow.wrap, "nowrap", "spotlight names stay on one line");
+    assert(narrow.pageOverflow <= 0, "spotlight does not make the page wider than the screen");
+
+    // Short draws stay still, and switching to a winner cleans up the old scroller.
+    const shortRoster = buildRoster().map((p, i) => ({ ...p, eliminatedDate: i === 0 ? "2026-11-19" : "" }));
+    await evaluate(`localStorage.setItem(${JSON.stringify(DEMO_KEY)}, ${JSON.stringify(JSON.stringify(shortRoster))}); document.querySelector('#proj-refresh').click()`);
+    await waitFor("document.querySelectorAll('.proj-chip').length === 1", "short draw");
+    await sleep(400);
+    assert.strictEqual(await evaluate("document.querySelector('.proj-spot-chips').scrollLeft"), 0, "short draws stay still");
+    const winnerRoster = buildRoster().map((p, i) => ({ ...p, eliminatedDate: i === 0 ? "" : "2026-11-19" }));
+    await evaluate(`localStorage.setItem(${JSON.stringify(DEMO_KEY)}, ${JSON.stringify(JSON.stringify(winnerRoster))}); document.querySelector('#proj-refresh').click()`);
+    await waitFor("!!document.querySelector('.proj-spotlight--winner')", "winner spotlight");
+    assert.strictEqual(await evaluate("document.querySelectorAll('.proj-spot-chips').length"), 0, "winner replaces scrolling spotlight");
+
     assert.deepStrictEqual(pageErrors, [], "no JavaScript errors on the page");
-    console.log("Projector layout check passed: 37 teams x 7 players fit on one screen.");
+    console.log("Projector layout and scrolling spotlight checks passed.");
   } finally {
     ws.close();
     chrome.kill();

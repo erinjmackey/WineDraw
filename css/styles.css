@@ -1588,7 +1588,7 @@ select {
 .proj-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 3vh;
+  font-size: 4vh;
   font-weight: 700;
   line-height: 1.05;
   white-space: nowrap;
@@ -1623,7 +1623,7 @@ select {
 
 .proj-tally-num {
   font-family: var(--font-display);
-  font-size: 2.8vh;
+  font-size: 3.4vh;
   font-weight: 700;
   line-height: 1;
   color: #ffffff;
@@ -1731,9 +1731,27 @@ select {
 
 .proj-spot-chips {
   display: flex;
+  flex: 1 1 0;
   gap: 0.4vw;
   min-width: 0;
-  overflow: hidden;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+
+.proj-spot-chips::-webkit-scrollbar {
+  display: none;
+}
+
+/* People who prefer reduced motion can scroll the names themselves. */
+@media (prefers-reduced-motion: reduce) {
+  .proj-spot-chips {
+    scrollbar-width: thin;
+  }
+  .proj-spot-chips::-webkit-scrollbar {
+    display: block;
+    height: 5px;
+  }
 }
 
 .proj-chip {
@@ -1954,69 +1972,17 @@ select {
     white-space: normal;
   }
   .proj-spotlight {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.6rem 1rem;
-  overflow: hidden;
-}
-
-.proj-spot-label {
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-.proj-spot-chips {
-  flex: 1;
-  min-width: 0; /* Allows flex child to shrink below content width */
-  overflow: hidden;
-}
-
-.proj-spot-track {
-  display: flex;
-  width: max-content;
-  animation: scroll-chips 35s linear infinite;
-}
-
-.proj-spot-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding-right: 0.5rem; /* Matches gap before the duplicated group */
-  flex-shrink: 0;
-}
-
-.proj-chip {
-  font-size: 0.9rem;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
-
-/* Pause on hover so readers can inspect names and varietals */
-.proj-spotlight:hover .proj-spot-track {
-  animation-play-state: paused;
-}
-
-@keyframes scroll-chips {
-  0% {
-    transform: translateX(0);
+    height: auto;
+    white-space: nowrap;
+    padding: 0.6rem 1rem;
   }
-  100% {
-    transform: translateX(-50%);
+  .proj-spotlight--winner {
+    flex-wrap: wrap;
+    white-space: normal;
   }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .proj-spot-track {
-    animation: none;
+  .proj-chip {
+    font-size: 0.9rem;
   }
-  .proj-spot-group[aria-hidden="true"] {
-    display: none;
-  }
-  .proj-spot-chips {
-    overflow-x: auto;
-  }
-}
   .proj-grid {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-template-rows: none;
@@ -2101,19 +2067,4 @@ select {
   padding: 0.2rem 0.6rem;
   border-radius: 999px;
   white-space: nowrap;
-}
-
-/* ==========================================================================
-   Accessibility / Screen Reader Only
-   ========================================================================== */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
 }
