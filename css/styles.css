@@ -655,7 +655,7 @@ select {
 
 .team-card--eliminated .team-name {
   color: #4a3b3d;
-  text-decoration: line-through;
+  text-decoration: none;
   text-decoration-color: rgba(110, 26, 42, 0.45);
   text-decoration-thickness: 1.5px;
 }
@@ -1588,7 +1588,7 @@ select {
 .proj-title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 4vh;
+  font-size: 3vh;
   font-weight: 700;
   line-height: 1.05;
   white-space: nowrap;
@@ -1623,7 +1623,7 @@ select {
 
 .proj-tally-num {
   font-family: var(--font-display);
-  font-size: 3.4vh;
+  font-size: 2.8vh;
   font-weight: 700;
   line-height: 1;
   color: #ffffff;
@@ -1691,7 +1691,7 @@ select {
   display: flex;
   align-items: center;
   gap: 0.6vw;
-  height: 5vh;
+  height: 3.5vh;
   padding: 0 1.2vw;
   background: var(--bg-card);
   border-bottom: 1px solid var(--border-subtle);
@@ -1742,7 +1742,7 @@ select {
   border: 1px solid var(--claret-border);
   border-radius: 999px;
   padding: 0.2vh 0.6vw;
-  font-size: 1.7vh;
+  font-size: 1.2vh;
   font-weight: 600;
   color: var(--claret-deep);
 }
@@ -1809,7 +1809,7 @@ select {
 
 .proj-team--out .proj-team-name {
   color: #4a3b3d;
-  text-decoration: line-through;
+  text-decoration: none;
   text-decoration-color: #7d6b6d;
 }
 
@@ -1890,8 +1890,7 @@ select {
 .proj-player--out .proj-player-name {
   color: #4a3b3d;
   font-weight: 500;
-  text-decoration: line-through;
-  text-decoration-color: #6e5d5f;
+  text-decoration: none;
 }
 
 .proj-player--winner .proj-player-name {
@@ -1919,8 +1918,8 @@ select {
   font-size: 1vh;
   line-height: 1;
   font-weight: 600;
-  color: var(--claret-deep);
-  background: var(--claret-soft);
+  background: #793038;
+  color: white;
   border: 1px solid var(--claret-border);
   border-radius: 999px;
   padding: 0 0.4vw;
@@ -1955,18 +1954,69 @@ select {
     white-space: normal;
   }
   .proj-spotlight {
-    height: auto;
-    flex-wrap: wrap;
-    white-space: normal;
-    padding: 0.6rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1rem;
+  overflow: hidden;
+}
+
+.proj-spot-label {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.proj-spot-chips {
+  flex: 1;
+  min-width: 0; /* Allows flex child to shrink below content width */
+  overflow: hidden;
+}
+
+.proj-spot-track {
+  display: flex;
+  width: max-content;
+  animation: scroll-chips 35s linear infinite;
+}
+
+.proj-spot-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-right: 0.5rem; /* Matches gap before the duplicated group */
+  flex-shrink: 0;
+}
+
+.proj-chip {
+  font-size: 0.9rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* Pause on hover so readers can inspect names and varietals */
+.proj-spotlight:hover .proj-spot-track {
+  animation-play-state: paused;
+}
+
+@keyframes scroll-chips {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .proj-spot-track {
+    animation: none;
+  }
+  .proj-spot-group[aria-hidden="true"] {
+    display: none;
   }
   .proj-spot-chips {
-    flex-wrap: wrap;
-    overflow: visible;
+    overflow-x: auto;
   }
-  .proj-chip {
-    font-size: 0.9rem;
-  }
+}
   .proj-grid {
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-template-rows: none;

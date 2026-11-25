@@ -91,7 +91,16 @@ function renderSpotlight(board) {
 
   els.spotlight.innerHTML = `
     <span class="proj-spot-label">Round ${latest.round} Out (${latest.players.length}):</span>
-    <div class="proj-spot-chips">${chips}</div>
+    <div class="proj-spot-chips">
+      <div class="proj-spot-track">
+        <div class="proj-spot-group">
+          ${chips}
+        </div>
+        <div class="proj-spot-group" aria-hidden="true">
+          ${chips}
+        </div>
+      </div>
+    </div>
   `;
 }
 
